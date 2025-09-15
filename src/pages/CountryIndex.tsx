@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 const CountryIndex: React.FC = () => {
   // Dummy data for countries
   const countries = [
+    { code: 'in', name: 'India' },
     { code: 'us', name: 'United States' },
     { code: 'uk', name: 'United Kingdom' },
     { code: 'de', name: 'Germany' },
