@@ -1,1 +1,73 @@
-node_modules
+# Node dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Vite cache and temp
+.vite/
+.temp/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+# Keep example env
+!.env.example
+
+# IDE/editor settings
+.vscode/
+*.swp
+*.swo
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Coverage & testing
+coverage/
+.nyc_output/
+
+# Misc caches
+.DS_Store
+Thumbs.db
+*.tgz
+
+# Optional lock files (uncomment if you don't want to commit)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Ollama model cache (if any generated locally)
+ollama/
+
+# Generated docs or artifacts
+FREE_APIS_INFO.md
+# Keep README
+!README.md
+
+# Ignore local scripts
+scripts/local-*/
+
+# Images placeholders
+api/placeholder/
+
+# Prevent committing large dumps
+*.sqlite
+*.bak
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+
+# OS specific
+Desktop.ini
