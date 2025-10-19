@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { HomeIcon, MapIcon, CameraIcon, BookOpenIcon, BeakerIcon } from '@heroicons/react/24/outline';
+import { UserButton } from '@clerk/clerk-react';
 
 const navigation = [
   { name: 'Home', href: '/', icon: HomeIcon },
@@ -45,6 +46,17 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   );
                 })}
               </div>
+            </div>
+            {/* User Profile Button */}
+            <div className="flex items-center">
+              <UserButton 
+                afterSignOutUrl="/login"
+                appearance={{
+                  elements: {
+                    avatarBox: 'w-10 h-10'
+                  }
+                }}
+              />
             </div>
           </div>
         </div>
