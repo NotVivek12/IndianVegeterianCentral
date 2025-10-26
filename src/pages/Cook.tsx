@@ -1,17 +1,6 @@
 import { useState, useRef } from 'react';
 import { CakeIcon, PlusIcon, XMarkIcon, ClockIcon, UsersIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
-
-interface Recipe {
-  name: string;
-  description: string;
-  prepTime: string;
-  cookTime: string;
-  servings: string;
-  difficulty: string;
-  ingredients: string[];
-  instructions: string[];
-  tips?: string[];
-}
+import { generateRecipe as generateRecipeAI, Recipe } from '../lib/ai';
 
 const Cook: React.FC = () => {
   const [ingredients, setIngredients] = useState<string[]>([]);
@@ -131,81 +120,14 @@ const Cook: React.FC = () => {
     setError('');
     
     try {
-      const prompt = `
-You are an expert vegetarian chef. Create a delicious vegetarian recipe using the following available ingredients and preferences:
-
-AVAILABLE INGREDIENTS: ${ingredients.join(', ')}
-DIETARY PREFERENCES: ${dietaryPreferences.join(', ')}
-MEAL TYPE: ${mealType}
-COOKING TIME: ${cookingTime}
-DIFFICULTY LEVEL: ${difficulty}
-
-Please create a complete recipe that:
-1. Uses primarily the available ingredients (it's okay to add common pantry items)
-2. Is strictly vegetarian (no meat, fish, or seafood)
-3. Is practical and achievable
-4. Includes clear step-by-step instructions
-
-Respond in this exact JSON format:
-{
-  "name": "Recipe Name",
-  "description": "Brief appetizing description",
-  "prepTime": "X minutes",
-  "cookTime": "X minutes", 
-  "servings": "X people",
-  "difficulty": "Easy/Medium/Hard",
-  "ingredients": [
-    "ingredient 1 with quantity",
-    "ingredient 2 with quantity"
-  ],
-  "instructions": [
-    "Step 1 instruction",
-    "Step 2 instruction"
-  ],
-  "tips": [
-    "Helpful tip 1",
-    "Helpful tip 2"
-  ]
-}
-
-Make sure the recipe is creative, flavorful, and makes good use of the available ingredients. Include approximate quantities for all ingredients.
-`;
-
-      const ollamaBaseUrl = import.meta.env.VITE_OLLAMA_BASE_URL || 'http://localhost:11434';
-      const recipeModel = import.meta.env.VITE_RECIPE_MODEL || 'gemma2:latest';
-
-      const response = await fetch(`${ollamaBaseUrl}/api/generate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: recipeModel,
-          prompt: prompt,
-          stream: false,
-          options: {
-            temperature: 0.7,
-            top_p: 0.9,
-          }
-        })
+      const recipeData = await generateRecipeAI({
+        ingredients,
+        dietaryPreferences,
+        mealType,
+        cookingTime,
+        difficulty,
       });
-
-      if (!response.ok) {
-        throw new Error(`Ollama service not available. Make sure Ollama is running on ${ollamaBaseUrl}`);
-      }
-
-      const data = await response.json();
-      const llmResponse = data.response;
-      
-      // Extract JSON from the response
-      const jsonMatch = llmResponse.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) {
-        throw new Error('Invalid response format from AI');
-      }
-
-      const recipeData = JSON.parse(jsonMatch[0]);
       setRecipe(recipeData);
-      
     } catch (error) {
       console.error('Recipe generation failed:', error);
       setError(error instanceof Error ? error.message : 'Failed to generate recipe. Please try again.');

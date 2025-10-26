@@ -581,7 +581,7 @@ const Scan: React.FC = () => {
         </p>
         <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800">
           <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
-          Powered by AI analysis with Ollama
+          Powered by AI analysis
         </div>
       </div>
 

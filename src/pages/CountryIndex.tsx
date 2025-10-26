@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MagnifyingGlassIcon, ChevronDownIcon, ChevronUpIcon, GlobeAltIcon, SparklesIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { cuisineSearch } from '../lib/ai';
 
 interface VegDish {
   name: string;
@@ -1002,51 +1003,12 @@ const CountryIndex: React.FC = () => {
     setShowAIResults(true);
     
     try {
-      const prompt = `
-You are a vegetarian cuisine expert. The user is searching for: "${searchTerm}"
-
-Please provide helpful information about vegetarian dishes, countries, or cuisines related to this search. Include:
-
-1. Relevant vegetarian dishes from different countries
-2. Brief descriptions of the dishes
-3. Key ingredients
-4. Cultural significance or interesting facts
-5. Cooking tips if applicable
-
-Keep the response informative but concise, and focus only on vegetarian/vegan options. Format the response in a friendly, helpful manner.
-
-Search query: "${searchTerm}"
-`;
-
-      const ollamaBaseUrl = import.meta.env.VITE_OLLAMA_BASE_URL || 'http://localhost:11434';
-      const searchModel = import.meta.env.VITE_SEARCH_MODEL || 'gemma2:latest';
-
-      const response = await fetch(`${ollamaBaseUrl}/api/generate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: searchModel,
-          prompt: prompt,
-          stream: false,
-          options: {
-            temperature: 0.7,
-            top_p: 0.9,
-          }
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('AI search service not available');
-      }
-
-      const data = await response.json();
-      setAiResults(data.response);
+      const text = await cuisineSearch(searchTerm);
+      setAiResults(text);
       
     } catch (error) {
       console.error('AI search failed:', error);
-      setAiResults('AI search is currently unavailable. Please make sure Ollama is running.');
+      setAiResults('AI search is currently unavailable. Please check your Gemini API key in .env.');
     } finally {
       setIsAISearching(false);
     }

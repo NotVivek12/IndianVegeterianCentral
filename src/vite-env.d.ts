@@ -4,6 +4,9 @@ interface ImportMetaEnv {
   readonly VITE_CLERK_PUBLISHABLE_KEY: string
   readonly VITE_OVERPASS_API_URL: string
   readonly VITE_OPENSTREETMAP_BASE_URL: string
+  readonly VITE_AI_PROVIDER: string
+  readonly VITE_GEMINI_API_KEY: string
+  readonly VITE_GEMINI_MODEL: string
   readonly VITE_OLLAMA_BASE_URL: string
   readonly VITE_OLLAMA_MODEL: string
   readonly VITE_RECIPE_MODEL: string
