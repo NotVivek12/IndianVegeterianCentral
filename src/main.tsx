@@ -17,6 +17,13 @@ ReactDOM.createRoot(document.getElementById('app')!).render(
       signInUrl="/login"
       signUpUrl="/register"
       afterSignOutUrl="/login"
+      signInFallbackRedirectUrl="/"
+      signUpFallbackRedirectUrl="/"
+      appearance={{
+        elements: {
+          rootBox: "mx-auto"
+        }
+      }}
     >
       <App />
     </ClerkProvider>

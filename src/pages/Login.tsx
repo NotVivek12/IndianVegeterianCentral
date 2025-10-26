@@ -36,6 +36,7 @@ const Login = () => {
             signUpUrl="/register"
             forceRedirectUrl="/"
             fallbackRedirectUrl="/"
+            redirectUrl="/"
           />
         </div>
 

@@ -36,6 +36,7 @@ const Register = () => {
             signInUrl="/login"
             forceRedirectUrl="/"
             fallbackRedirectUrl="/"
+            redirectUrl="/"
           />
         </div>
 
