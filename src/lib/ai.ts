@@ -38,10 +38,28 @@ function getGeminiModel(modelOverride?: string) {
 function extractJson<T = unknown>(text: string): T {
   try {
     return JSON.parse(text) as T;
-  } catch {
-    const match = text.match(/\{[\s\S]*\}/);
-    if (!match) throw new Error('AI did not return valid JSON');
-    return JSON.parse(match[0]) as T;
+  } catch (firstError: unknown) {
+    try {
+      // Try to extract JSON from text (remove markdown, extra text, etc.)
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error('No JSON object found in response');
+      
+      let jsonStr = jsonMatch[0];
+      
+      // Clean up common issues
+      jsonStr = jsonStr
+        .replace(/,(\s*[}\]])/g, '$1') // Remove trailing commas
+        .replace(/([{,]\s*)(\w+):/g, '$1"$2":') // Quote unquoted keys
+        .replace(/:\s*'([^']*)'/g, ': "$1"') // Convert single quotes to double
+        .replace(/\n/g, ' ') // Remove newlines
+        .trim();
+      
+      return JSON.parse(jsonStr) as T;
+    } catch (secondError: unknown) {
+      console.error('JSON parsing failed:', text);
+      const errorMsg = firstError instanceof Error ? firstError.message : 'Unknown parsing error';
+      throw new Error(`AI returned invalid JSON. Original error: ${errorMsg}`);
+    }
   }
 }
 
@@ -86,8 +104,8 @@ Return only JSON matching this schema:
     contents: [{ role: 'user', parts: [{ text: prompt }]}],
     generationConfig: {
       temperature: 0.7,
-      topP: 0.9,
-      responseMimeType: 'application/json'
+      topP: 0.9
+      // Removed responseMimeType to let model respond naturally
     }
   });
   const text = result.response.text();
@@ -128,7 +146,10 @@ Return JSON with: isVegetarian (boolean), nonVegIngredients (string[]), analysis
 TEXT:\n${text}`;
   const result = await model.generateContent({
     contents: [{ role: 'user', parts: [{ text: prompt }]}],
-    generationConfig: { responseMimeType: 'application/json', temperature: 0.3 }
+    generationConfig: { 
+      temperature: 0.3
+      // Removed responseMimeType to let model respond naturally
+    }
   });
   const raw = result.response.text();
   return extractJson<VegRiskResult>(raw);
