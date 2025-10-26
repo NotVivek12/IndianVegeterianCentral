@@ -30,7 +30,7 @@ function getGeminiModel(modelOverride?: string) {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   if (!apiKey) throw new Error('Missing VITE_GEMINI_API_KEY');
   if (!genAI) genAI = new GoogleGenerativeAI(apiKey);
-  const model = modelOverride || import.meta.env.VITE_GEMINI_MODEL || import.meta.env.VITE_RECIPE_MODEL || 'gemini-1.5-flash';
+  const model = modelOverride || import.meta.env.VITE_GEMINI_MODEL || import.meta.env.VITE_RECIPE_MODEL || 'gemini-2.5-flash';
   return genAI.getGenerativeModel({ model });
 }
 
